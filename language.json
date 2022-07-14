@@ -1,0 +1,26 @@
+{
+    "language": {
+        "tr": {
+            "country": "Türkiye",
+            "title": "En iyi site",
+            "description": "En iyi site",
+            "author": "Ferhat Duran",
+            "dateformat": "d.m.Y H:i:s",
+            "text": {
+                "author":"Geliştirici",
+                "about":"Merhaba ben 17 yaşındayım."
+            }
+        },
+        "en": {
+            "country": "United Kingdom",
+            "title": "Best site",
+            "description": "Best site",
+            "author": "Ferhat Duran",
+            "dateformat": "d-m-Y g:i a",
+            "text": {
+                "author":"Developer",
+                "about":"Hi i am 17 years old."
+            }
+        }
+    }
+}
