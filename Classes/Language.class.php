@@ -7,6 +7,46 @@ class Language
     public static $langs = [];
     private static $setup = false;
     private static $languageFormat = 0;
+    private static function eval($compile=null)
+    {
+        if(isset($compile)){
+            if(strpos($compile,"self") !== true){
+                eval($compile);
+            }
+        }
+    }
+    public static function Condition($if = array("condition" => null, "function" => null), $elseif = array("condition" => null, "function" => null), $else = array("function" => null))
+    {
+        if ((isset($if) && !isset($elseif) && !isset($else)) && (isset($if["condition"]))) {
+            if ($if["condition"]) {
+                self::eval($if["function"]);
+            }
+        } else if ((isset($if) && !isset($elseif) && isset($else)) && (isset($if["condition"]))) {
+            if ($if["condition"]) {
+                self::eval($if["function"]);
+            } else {
+                self::eval($else["function"]);
+            }
+        } else if ((isset($if) && isset($elseif) && isset($else)) && (isset($if["condition"]) && isset($elseif["condition"]))) {
+            if ($if["condution"]) {
+                $if["function"];
+            } else if ($elseif["condition"]) {
+                $elseif["function"];
+            } else {
+                $else["function"];
+            }
+        } else {
+            return false;
+        }
+    }
+    private static function Exception($except)
+    {
+        if(isset($except)){
+            if(strpos($except,"Notice")){
+                die($except);
+            }
+        }
+    }
     public static function Start($optionLang = null)
     {
         if (!self::$setup) {
@@ -19,7 +59,7 @@ class Language
                 self::GetLang();
                 self::ToggleSetup();
             }
-            if(!self::$languageFormat>0){
+            if (!self::$languageFormat > 0) {
                 self::GetLang();
             }
         }
@@ -59,7 +99,7 @@ class Language
                 return file_get_contents(trim($filename));
             }
         } catch (Exception $e) {
-            die($e);
+            self::Exception($e);
         }
     }
     private static function JsonEncode($data)
@@ -69,7 +109,7 @@ class Language
                 return json_encode($data);
             }
         } catch (Exception $e) {
-            die($e);
+            self::Exception($e);
         }
     }
     private static function JsonDecode($data, $object = false)
@@ -79,7 +119,7 @@ class Language
                 return json_decode($data, $object);
             }
         } catch (Exception $e) {
-            die($e);
+            self::Exception($e);
         }
     }
     public static function GetLang()
@@ -97,30 +137,18 @@ class Language
         try {
             if (isset($val) && $val !== "") {
                 if (self::$languageFormat === 1) {
-                    if (is_array(self::$langs[$val])) {
-                        if (isset($val2)) {
-                            if (isset(self::$langs[$val][$val2])) {
-                                return self::$langs[$val][$val2];
-                            }
-                        }
-                    } else if (!is_array(self::$langs[$val])) {
-                        if (isset(self::$langs[$val])) {
-                            return self::$langs[$val];
-                        }
+                    if (is_array(self::$langs[$val]) && isset($val2) && isset(self::$langs[$val][$val2])) {
+                        return self::$langs[$val][$val2];
+                    } else if (!is_array(self::$langs[$val]) && isset(self::$langs[$val])) {
+                        return self::$langs[$val];
                     } else {
                         return false;
                     }
                 } else if (self::$languageFormat === 2) {
-                    if (is_array(self::$langs[self::GetLanguage()][$val])) {
-                        if (isset($val2)) {
-                            if (isset(self::$langs[self::GetLanguage()][$val][$val2])) {
-                                return self::$langs[self::GetLanguage()][$val][$val2];
-                            }
-                        }
-                    } else if (!is_array(self::$langs[self::GetLanguage()][$val])) {
-                        if (isset(self::$langs[self::GetLanguage()][$val])) {
-                            return self::$langs[self::GetLanguage()][$val];
-                        }
+                    if (is_array(self::$langs[self::GetLanguage()][$val]) && isset($val2) && isset(self::$langs[self::GetLanguage()][$val][$val2])) {
+                        return self::$langs[self::GetLanguage()][$val][$val2];
+                    } else if (!is_array(self::$langs[self::GetLanguage()][$val]) && isset(self::$langs[self::GetLanguage()][$val])) {
+                        return self::$langs[self::GetLanguage()][$val];
                     } else {
                         return false;
                     }
@@ -131,7 +159,7 @@ class Language
                 return false;
             }
         } catch (Exception $e) {
-            die($e);
+            self::Exception($e);
         }
     }
 }
