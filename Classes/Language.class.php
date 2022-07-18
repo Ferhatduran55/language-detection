@@ -29,11 +29,11 @@ class Language
             }
         } else if ((isset($if) && isset($elseif) && isset($else)) && (isset($if["condition"]) && isset($elseif["condition"]))) {
             if ($if["condution"]) {
-                $if["function"];
+                self::eval($if["function"]);
             } else if ($elseif["condition"]) {
-                $elseif["function"];
+                self::eval($elseif["function"]);
             } else {
-                $else["function"];
+                self::eval($else["function"]);
             }
         } else {
             return false;
@@ -42,9 +42,7 @@ class Language
     private static function Exception($except)
     {
         if(isset($except)){
-            if(strpos($except,"Notice")){
-                die($except);
-            }
+            die($except);
         }
     }
     public static function Start($optionLang = null)
